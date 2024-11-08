@@ -1,34 +1,62 @@
 * {
     padding: 0;
     margin: 0;
+    background-color: rgb(170, 163, 163);
+}
+
+
+.titulo {
+    font-size: 58px;
+    margin: 40px 20% 20px 20%;
 }
 
 form {
     border: none;
     display: inline;
+    
 }
 
-input {
-    width: 30px;
+.formOpciones {
+    margin: auto 45%;
+}
+
+.selectObra {
+    margin: auto 49% 25px;
+}
+
+input:not(.selectObra) {
+    width: 40px;
+    height: 30px;
     text-align: center;
     border: none;
+    margin: 2px;
+    border-radius: 0 0 10px 10px;
+    background-color: rgb(32, 177, 32);
+    color: white;
+    font-size: 16px;
 }
 
-.izq-container {
-    width: 200px;
-    height: 450px;
-    display: inline;
-    margin: 50px;
+.main-container {
+    align-items: center;
+    align-content: center;
+    text-align: center;
+    border: black 3px solid;
+    box-shadow: 2px black, 10px black, 17px black;
 }
 
-.der-container {
-    width: 200px;
-    height: 450px;
+.izq-container, .der-container {
+    width: 300px;
+    height: 300px;
     display: inline;
-    margin: 50px;
+    align-self: flex-start;
+    margin: auto;
+    background-color: red;
+    position: relative;
 }
 
 .fila-container {
-    display: block;
+    width: 50%;
+    display: inline-block;
     margin: 0px;
+
 }

@@ -8,6 +8,11 @@
 </head>
 <body>
 
+    <div class="titulo-container">
+        <h1 class="titulo">¡Seleccion la obra que va a ver!</h1>
+    </div>
+
+
     <?php
 
         include "fnc.php";
@@ -21,14 +26,14 @@
         $consulta = "SELECT * FROM Obra";
         $resultado = $conexion->query($consulta);
         
-        echo "<form id='formularioOpciones' method=post>";
+        echo "<form id='formularioOpciones' method=post class='formOpciones'>";
             echo "<select name='opcion' label='Obras Disponibles'>";
                 echo "<optgroup for='Obras Disponibles'>";
                     while($columna = $resultado->fetch_assoc())
                     {
                         echo "<option value=" . $columna['ID_Obra'] . ">" . $columna['Nombre_Obra'] . "</option>";
                     }
-                    echo "<input type='submit'>";
+                    echo "<input type='submit' class='selectObra' value='Seleccionar'>";
                 echo "</optgroup>";
                 
             echo "</select>";
@@ -51,53 +56,55 @@
         $consulta = "SELECT * FROM ubicarbutaca WHERE ID_Programacion = $ID_Programacion";
         $resultado = $conexion->query($consulta);
 
-        // Lado izquierdo
-        echo "<div class='izq-container'>";
-            echo "<div class='fila-container'>";
-            while($columna = $resultado->fetch_assoc())
-            {
-                
-                $estilo = "style='background-color: green;'";
-                if($columna['Disponibilidad_Butaca'] == 1)
+        echo "<div class='main-container'>";
+
+            // Lado izquierdo
+            echo "<div class='izq-container'>";
+                echo "<div class='fila-container'>";
+                while($columna = $resultado->fetch_assoc())
                 {
-                    $estilo = "style='background-color: red;'";
-                }
-
-                echo "<form action='' method='POST'>";
-                echo "<input type='hidden' name='disponibilidadValue' value=" . $columna['Disponibilidad_Butaca'] . ">";
-                echo "<input type='hidden' name='indValue' value=" . $columna['ID_Butaca'] . ">";
-                echo "<input type='submit' name='numButaca' " . $estilo . " value=" . $columna['ID_Butaca'] . ">";
-                echo "</form>";
-
-                if(($columna['ID_Butaca'] % 8 == 0 && $columna['ID_Butaca'] < 248) or $columna['ID_Butaca'] == 248)
-                {
-                    echo "</div>";
-
-                    if($columna['ID_Butaca'] == 120)
+                    $estilo = "";
+                    if($columna['Disponibilidad_Butaca'] == 1)
                     {
-                        echo "</div'>";
-                        echo "</div class='der-container'>";
+                        $estilo = "style='background-color: red;'";
                     }
 
-                    echo "<div class='fila-container'>";
+                    echo "<form action='' method='POST'>";
+                    echo "<input type='hidden' name='disponibilidadValue' value=" . $columna['Disponibilidad_Butaca'] . ">";
+                    echo "<input type='hidden' name='indValue' value=" . $columna['ID_Butaca'] . ">";
+                    echo "<input type='submit' name='numButaca' " . $estilo . " value=" . $columna['ID_Butaca'] . ">";
+                    echo "</form>";
+
+                    if(($columna['ID_Butaca'] % 8 == 0 && $columna['ID_Butaca'] < 248) or $columna['ID_Butaca'] == 248)
+                    {
+                        echo "</div>";
+
+                        if($columna['ID_Butaca'] == 120)
+                        {
+                            echo "</div>";
+                            echo "<div class='der-container'>";
+                        }
+
+                        echo "<div class='fila-container'>";
+                    }
+
                 }
 
-            }
-
+                echo "</div>";
             echo "</div>";
-        echo "</div>";
+        echo "</div>";      
+        
 
         if(isset($_POST["indValue"]))
         {
             // Cambiar el campo de disponibilidad_butaca
             $consulta = "UPDATE ubicarbutaca SET Disponibilidad_Butaca = 1 WHERE ID_Butaca = " . $_POST["indValue"] . " AND ID_Programacion = " . $ID_Programacion;
             $conexion->query($consulta);
-            
-            
+            #header('index.php');
         }
 
     ?>
 
-    <!-- <a href="llenarTAblas.php">asdadw</a> -->
+     <!-- <a href="llenarTAblas.php">asdadw</a>  -->
 </body>
 </html>

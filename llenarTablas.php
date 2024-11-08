@@ -10,20 +10,12 @@
         include "fnc.php";
 
 
-
-        $consultaObra = "SELECT * FROM obra";
-        $resultadoObra = $conexion->query($consultaObra);
-
-        while($columnaObra = $resultadoObra->fetch_assoc())
+        for($i = 2; $i < 256; $i++)
         {
-
-            $consultaInsert = "INSERT INTO programacion " .
-                "(ID_Obra, Precio_Butaca, Porcentaje_Oferta, Fecha_Funcion) VALUES (" .
-                $columnaObra['ID_Obra'] . ", 100, 0, NOW())";
-
-            $conexion->query($consultaInsert);
-
+            $InsertButaca = "INSERT INTO `butaca` (`ID_Butaca`) VALUES ($i);";
+            $resultadoObra = $conexion->query($InsertButaca);
         }
+        
 
         $consultaProgramacion = "SELECT * FROM programacion";
         $resultadoProgramacion = $conexion->query($consultaProgramacion);
