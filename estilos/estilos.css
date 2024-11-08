@@ -1,0 +1,34 @@
+* {
+    padding: 0;
+    margin: 0;
+}
+
+form {
+    border: none;
+    display: inline;
+}
+
+input {
+    width: 30px;
+    text-align: center;
+    border: none;
+}
+
+.izq-container {
+    width: 200px;
+    height: 450px;
+    display: inline;
+    margin: 50px;
+}
+
+.der-container {
+    width: 200px;
+    height: 450px;
+    display: inline;
+    margin: 50px;
+}
+
+.fila-container {
+    display: block;
+    margin: 0px;
+}
