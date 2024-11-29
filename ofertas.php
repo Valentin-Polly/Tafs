@@ -97,7 +97,7 @@ Carousel (sin terminar)
 <section class="carousel">
     <div class="carousel-inner">
         <?php
-       /* $sql = "SELECT img, nombre FROM espectaculos ORDER BY RAND() LIMIT 1";
+        $sql = "SELECT img, nombre FROM espectaculos ORDER BY RAND() LIMIT 1";
         $result = $conn->query($sql);
 
         if ($result->num_rows > 0) {
@@ -110,7 +110,7 @@ Carousel (sin terminar)
                 <?php
             }
         }
-        */?>
+        ?>
     </div>
     <div class="carousel-controls">
     <button class="carousel-control prev" onclick="moveCarousel(-1)">&#10094;</button>
@@ -126,21 +126,9 @@ Mostrar productos
 
  <section class="products">
     <?php
-    $sql = "SELECT * FROM espectaculos";
-
-    if($fecha_filtro)
-    {
-        $sql .= " WHERE fecha = '" . $fecha_filtro . "'";
-    } else {
-        $sql .= " WHERE fecha <= NOW()"; 
-    }
-
+    $sql = "SELECT * FROM espectaculos WHERE categoria= 'oferta' ";
     $result = $conn->query($sql);
-     
-    ?>
-    <div class="tituloObra"><h1><?php echo "Obras: " . $fecha_filtro;?></h1></div>
-    
-    <?php
+
     if ($result === false) {
         echo "Error en la consulta: " . $conn->error;
     } else {
@@ -148,7 +136,7 @@ Mostrar productos
             while($row = $result->fetch_assoc()) {
                 ?>
                 <div class="product">
-                    <div class="NombreProducto"><?php echo htmlspecialchars(string: $row['nombre']); ?></div>
+                    <div class="NombreProducto"><?php echo htmlspecialchars($row['nombre']); ?></div>
                     <?php if(!empty($row['img'])) { ?>
                         <img src="data:image/jpg;base64,<?php echo base64_encode($row['img']); ?>" alt="<?php echo htmlspecialchars($row['nombre']); ?>"/>
                     <?php } ?>
@@ -159,19 +147,7 @@ Mostrar productos
                     </div>
                     <div class="duracion">Duración: <?php echo htmlspecialchars($row['duracion']); ?></div>
                     <div class="button-container">
-
-
-                        <form action="pago.php" method="POST">
-                        <input type="hidden" name="id_espectaculo" value="<?php echo htmlspecialchars($row['id_espectaculo']); ?>">
-                        <input type="hidden" name="nombre" value="<?php echo htmlspecialchars($row['nombre']); ?>">
-                        <input type="hidden" name="precio" value="<?php echo htmlspecialchars($row['precio']); ?>">
-                        <input type="hidden" name="fecha" value="<?php echo htmlspecialchars($row['fecha']); ?>">
-                        <input type="hidden" name="hora" value="<?php echo htmlspecialchars($row['hora']); ?>">
-                        <input type="hidden" name="descripcion" value="<?php echo htmlspecialchars($row['descripcion']); ?>">
-                        <input type="hidden" name="img" src="data:image/jpg;base64, <?php echo base64_encode($row['img']); ?>">
-                        <button type="submit" class="btn-agregar">Reserva</button>
-                        </form>
-
+                        <button>Agregar</button>
                         <button onclick="toggleDescription('desc_<?php echo htmlspecialchars($row['nombre']); ?>')">Detalles</button>
                         <div id="desc_<?php echo htmlspecialchars($row['nombre']); ?>" class="description" style="display:none;">
                             <?php echo htmlspecialchars($row['descripcion']); ?>
@@ -186,6 +162,7 @@ Mostrar productos
     }
     ?>
 </section>
+</body>
 <footer>
     <div>
         <h2>Redes TAFS</h2>
@@ -199,5 +176,4 @@ Mostrar productos
         <p>Teatro TAFS &reg; 2024</p>
     </div>
 </footer>
-</body>
 </html>
