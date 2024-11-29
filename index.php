@@ -1,203 +1,110 @@
-<!--
-==============================================================================================================================================================================
-Conexion con Base de Datos
-==============================================================================================================================================================================
--->
-<?php
-// Conexión a la base de datos
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "tafs"; // Se cambió el nombre de la base de datos para evitar espacios
-
-$conn = new mysqli($servername, $username, $password, $dbname);
-
-// Verificar conexión
-if ($conn->connect_error) {
-    die("Error de conexión: " . $conn->connect_error);
-}
-
-// Inicia la sesión
-session_start();
-
-// Verifica si el usuario ha iniciado sesión
-if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] == true) {
-    echo "Bienvenido, " . $_SESSION['email'];
-    $boton = '<li><a href="cerrar_sesion.php">Cerrar sesión</a></li>';
-} else {
-    $mensaje = "";
-    $boton = '<li><a href="login.php">Login</a></li>';
-    $boton .= '<li><a href="registro.php">Registro</a></li>';
-}
-
-$fecha_filtro = isset($_GET['fecha']) ? $_GET['fecha'] : null;
-?>
-
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Teatro - Reserva de Entradas</title>
-    <link rel="stylesheet" href="css/estilos.css">
-    <script src="https://kit.fontawesome.com/2bec4d7b4a.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="estilos/estilos.css">
+    <title>Document</title>
 </head>
 <body>
 
-<!--
-==============================================================================================================================================================================
-Menú de Navegación
-==============================================================================================================================================================================
--->
-    <nav>
-    <ul>
-    <li><a href="index.php"><img width="50px" src="img/IMG-20241010-WA0006.png" alt="Logo" id="logo"><span style="font-size: 30px; vertical-align: 20px; color: #f9f9f9;  margin-left: 10px;">TAFS  | </span></a></li>
-    <li><a href="ofertas.php">Ofertas</a></li>
-    <li><a href="contactos.php">Contactanos</a></li>
-    <li>
-      <a href="#">Usuario</a>
-      <ul>
-        <?php echo $boton; ?>
-        <li><a href="miCuenta.php">Mi Cuenta</a></li>
-        <li><a href="puntosTafs.php">Puntos Tafs</a></li>
-      </ul>
-    </li>
-    <li><input type="date" id="calendar" onchange="filtrarPorFecha()" /></li>
-  </ul>
-</nav>
-<script>
-function filtrarPorFecha() {
-    var fecha = document.getElementById('calendar').value;
-    window.location.href = 'index.php?fecha=' + fecha;
-}
-
-window.onload = function() {
-    var urlParams = new URLSearchParams(window.location.search);
-    var fecha = urlParams.get('fecha');
-    if (fecha) {
-        document.getElementById('calendar').value = fecha;
-    }
-}
-
-function toggleDescription(id) {
-    var desc = document.getElementById(id);
-    if (desc.style.display === "none") {
-        desc.style.display = "block";
-    } else {
-        desc.style.display = "none";
-    }
-}
-
-</script>
-<!--
-==============================================================================================================================================================================
-Carousel (sin terminar)
-==============================================================================================================================================================================
-
-<section class="carousel">
-    <div class="carousel-inner">
-        <?php
-       /* $sql = "SELECT img, nombre FROM espectaculos ORDER BY RAND() LIMIT 1";
-        $result = $conn->query($sql);
-
-        if ($result->num_rows > 0) {
-            while($row = $result->fetch_assoc()) {
-                ?>
-                <div class="carousel-item">
-                    <div class="NombreProducto"><?php echo $row['nombre']; ?></div>
-                    <img src="data:image/jpg;base64,<?php echo base64_encode($row['img']); ?>" />
-                </div>
-                <?php
-            }
-        }
-        */?>
+    <div class="titulo-container">
+        <h1 class="titulo">¡Seleccion la obra que va a ver!</h1>
     </div>
-    <div class="carousel-controls">
-    <button class="carousel-control prev" onclick="moveCarousel(-1)">&#10094;</button>
-    <button class="carousel-control next" onclick="moveCarousel(1)">&#10095;</button>
-    </div>
-</section>
--->
-    <!--
-==============================================================================================================================================================================
-Mostrar productos
-==============================================================================================================================================================================
- -->
 
- <section class="products">
+
     <?php
-    $sql = "SELECT * FROM espectaculos";
 
-    if($fecha_filtro)
-    {
-        $sql .= " WHERE fecha = '" . $fecha_filtro . "'";
-    } else {
-        $sql .= " WHERE fecha <= NOW()"; 
-    }
+        include "fnc.php";
+        // Cantidad de asientos: En total son 249 (15 filas de 8 butacas) por lado (izquierdo y derecho)
+        // Entidad en el DER: Asientos
+        // Campos: 
+        //       Obra: Obra para la que esta preparado el asiento.
+        //        Disponibilidad: Muestra si el asiento esta disponible. -->
 
-    $result = $conn->query($sql);
-     
-    ?>
-    <div class="tituloObra"><h1><?php echo "Obras: " . $fecha_filtro;?></h1></div>
-    
-    <?php
-    if ($result === false) {
-        echo "Error en la consulta: " . $conn->error;
-    } else {
-        if ($result->num_rows > 0) {
-            while($row = $result->fetch_assoc()) {
-                ?>
-                <div class="product">
-                    <div class="NombreProducto"><?php echo htmlspecialchars(string: $row['nombre']); ?></div>
-                    <?php if(!empty($row['img'])) { ?>
-                        <img src="data:image/jpg;base64,<?php echo base64_encode($row['img']); ?>" alt="<?php echo htmlspecialchars($row['nombre']); ?>"/>
-                    <?php } ?>
-                    <div class="price">$<?php echo htmlspecialchars($row['precio']); ?></div>
-                    <div class="fecha">
-                        Fecha: <?php echo htmlspecialchars($row['fecha']); ?> | 
-                        Hora: <?php echo htmlspecialchars($row['hora']); ?>
-                    </div>
-                    <div class="duracion">Duración: <?php echo htmlspecialchars($row['duracion']); ?></div>
-                    <div class="button-container">
+        // Muestra opciones de las obras que estan programadas y si el usuario desea ver una de ellas, aparecen las butacas, las posiciones de las mismas y la posibilidad de reservarlas en caso de que esten disponibles
+        $consulta = "SELECT * FROM Obra";
+        $resultado = $conexion->query($consulta);
+        
+        echo "<form id='formularioOpciones' method=post class='formOpciones'>";
+            echo "<select name='opcion' label='Obras Disponibles'>";
+                echo "<optgroup for='Obras Disponibles'>";
+                    while($columna = $resultado->fetch_assoc())
+                    {
+                        echo "<option value=" . $columna['ID_Obra'] . ">" . $columna['Nombre_Obra'] . "</option>";
+                    }
+                    echo "<input type='submit' class='selectObra' value='Seleccionar'>";
+                echo "</optgroup>";
+                
+            echo "</select>";
+        echo "</form>";
 
+        $opcion = 1;
 
-                        <form action="pago.php" method="POST">
-                        <input type="hidden" name="id_espectaculo" value="<?php echo htmlspecialchars($row['id_espectaculo']); ?>">
-                        <input type="hidden" name="nombre" value="<?php echo htmlspecialchars($row['nombre']); ?>">
-                        <input type="hidden" name="precio" value="<?php echo htmlspecialchars($row['precio']); ?>">
-                        <input type="hidden" name="fecha" value="<?php echo htmlspecialchars($row['fecha']); ?>">
-                        <input type="hidden" name="hora" value="<?php echo htmlspecialchars($row['hora']); ?>">
-                        <input type="hidden" name="descripcion" value="<?php echo htmlspecialchars($row['descripcion']); ?>">
-                        <input type="hidden" name="img" src="data:image/jpg;base64, <?php echo base64_encode($row['img']); ?>">
-                        <button type="submit" class="btn-agregar">Reserva</button>
-                        </form>
-
-                        <button onclick="toggleDescription('desc_<?php echo htmlspecialchars($row['nombre']); ?>')">Detalles</button>
-                        <div id="desc_<?php echo htmlspecialchars($row['nombre']); ?>" class="description" style="display:none;">
-                            <?php echo htmlspecialchars($row['descripcion']); ?>
-                        </div>
-                    </div>
-                </div>
-                <?php
-            }
-        } else {
-            echo "<p>No hay espectáculos disponibles para la fecha seleccionada.</p>";
+        // Toma la opcion seleccionada y dibuja las butacas en la pantalla
+        if(isset($_POST["opcion"])) 
+        {
+            // Si se selecciono una opcion, se muestran todos sus butacas
+            $opcion = $_POST["opcion"];
+            echo "Seleccionaste la opcion: " . $_POST["opcion"];
         }
-    }
+
+        $consultaID_Obra = "SELECT ID_Programacion FROM programacion WHERE ID_Obra = $opcion";
+        $resultadoID_Programacion = $conexion->query($consultaID_Obra);
+        $ID_Programacion = $resultadoID_Programacion->fetch_assoc()['ID_Programacion'];
+
+        $consulta = "SELECT * FROM ubicarbutaca WHERE ID_Programacion = $ID_Programacion";
+        $resultado = $conexion->query($consulta);
+
+        echo "<div class='main-container'>";
+
+            // Lado izquierdo
+            echo "<div class='izq-container'>";
+                echo "<div class='fila-container'>";
+                while($columna = $resultado->fetch_assoc())
+                {
+                    $estilo = "";
+                    if($columna['Disponibilidad_Butaca'] == 1)
+                    {
+                        $estilo = "style='background-color: red;'";
+                    }
+
+                    echo "<form action='' method='POST'>";
+                    echo "<input type='hidden' name='disponibilidadValue' value=" . $columna['Disponibilidad_Butaca'] . ">";
+                    echo "<input type='hidden' name='indValue' value=" . $columna['ID_Butaca'] . ">";
+                    echo "<input type='submit' name='numButaca' " . $estilo . " value=" . $columna['ID_Butaca'] . ">";
+                    echo "</form>";
+
+                    if(($columna['ID_Butaca'] % 8 == 0 && $columna['ID_Butaca'] < 248) or $columna['ID_Butaca'] == 248)
+                    {
+                        echo "</div>";
+
+                        if($columna['ID_Butaca'] == 120)
+                        {
+                            echo "</div>";
+                            echo "<div class='der-container'>";
+                        }
+
+                        echo "<div class='fila-container'>";
+                    }
+
+                }
+
+                echo "</div>";
+            echo "</div>";
+        echo "</div>";      
+        
+
+        if(isset($_POST["indValue"]))
+        {
+            // Cambiar el campo de disponibilidad_butaca
+            $consulta = "UPDATE ubicarbutaca SET Disponibilidad_Butaca = 1 WHERE ID_Butaca = " . $_POST["indValue"] . " AND ID_Programacion = " . $ID_Programacion;
+            $conexion->query($consulta);
+            #header('index.php');
+        }
+
     ?>
-</section>
-<footer>
-    <div>
-        <h2>Redes TAFS</h2>
-        <div class="redes-sociales">
-            <a href="https://www.facebook.com/teatro.tafs/" class="fa fa-facebook"></a>
-            <span>|</span>
-            <a href="https://x.com/teatrotafs" class="fa fa-twitter"></a>
-            <span>|</span>
-            <a href="https://www.instagram.com/teatrotafs/?igsh=dGx6azByMTd4M2pq" class="fa fa-instagram"></a>
-        </div>
-        <p>Teatro TAFS &reg; 2024</p>
-    </div>
-</footer>
+
+     <!-- <a href="llenarTAblas.php">asdadw</a>  -->
 </body>
 </html>
